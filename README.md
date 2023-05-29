@@ -49,7 +49,7 @@ SDRaD requires a CPU supporting Intel Memory Protection Keys (MPK) and a [Linux 
 
 
 ## Simple Example
-We provide several examples that demonstrate the library's use [simple_example/](./example/simple_example)
+We provide several examples that demonstrate the library's use in [examples/](./examples/)
 
 
 ## License 
