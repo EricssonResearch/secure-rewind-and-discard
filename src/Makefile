@@ -1,6 +1,6 @@
-OUT_FILE_NAME = libsdrad.a
+OUT_FILE_NAME = libsdrad.a libsdrad.so
 CC=gcc
-CONFIG_OPTION =  -DPKEY_ENABLE  -DSDRAD_MULTITHREAD  #-DZERO_DOMAIN
+SDRAD_CONFIG+= -DPKEY_ENABLE  #-DSDRAD_MULTITHREAD  #-DZERO_DOMAIN
 DEPS = sdrad.h sdrad_heap_mng.h sdrad_cache.h sdrad_error_handling.h\
 	   sdrad_pkey.h sdrad_signal.h sdrad_thread.h 
 
@@ -18,13 +18,13 @@ OBJECT_ROOT = sdrad.o  tlsf.o sdrad_heap_mng.o  sdrad_exit.o sdrad_enter.o \
 			  sdrad_cache.o sdrad_error_handling.o sdrad_enter_root.o \
 			  sdrad_exit_root.o sdrad_api.o
 
-all: $(OBJECT_ROOT) libsdrad.a libsdrad.so
+all: $(OBJECT_ROOT) $(OUT_FILE_NAME)
 
 %.o: %.c $(DEPS)
-	$(CC)  -g   $(CFLAGS) $(CONFIG_OPTION) -c -o $@ $< 
+	$(CC)  -g   $(CFLAGS) $(SDRAD_CONFIG) -c -o $@ $< 
 
 %.o: %.S $(DEPS)
-	$(CC)  -g   $(CFLAGS) $(CONFIG_OPTION) -c -o $@ $< 
+	$(CC)  -g   $(CFLAGS) $(SDRAD_CONFIG) -c -o $@ $< 
 
 
 libsdrad.so: $(OBJECT_ROOT) 

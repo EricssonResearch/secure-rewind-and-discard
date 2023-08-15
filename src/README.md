@@ -3,8 +3,15 @@ This folder contains the source code of the SDRaD Project.
 
 ### Compiler Flag
 
-* `-DSDRAD_MULTITHREAD` -> It enables supporting multithread application  
-* `-DZERO_DOMAIN` -> It allows zeroing domain after rewinding 
+To support multithreading applications, run
+```
+SDRAD_CONFIG=-DSDRAD_MULTITHREAD make
+```
+
+To build with zeroing domain after rewinding  run 
+```
+SDRAD_CONFIG=-DZERO_DOMAIN make
+```
 
 ### Changing SDRaD Domain Size
 As default domain size numbers, the following values are used: 
