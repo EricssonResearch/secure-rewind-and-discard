@@ -20,7 +20,7 @@ As default domain size numbers, the following values are used:
 * Execution Domain Default Stack Size `0x800000` (8MB) 
 * Data Domain Default Heap Size `0x100000000` (4GB)  
 
-These numbers can be customized by using the following environmental variables.
+These numbers can be customized by using the following environmental variables. Please customize them with decimal numbers:
 
 ```
 export SDRAD_STACK_SIZE

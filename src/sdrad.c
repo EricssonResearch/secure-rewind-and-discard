@@ -94,7 +94,7 @@ void sdrad_get_config(sdrad_d_info_t *sdi_ptr)
     pTmp = getenv( "SDRAD_STACK_SIZE");
 
     if( pTmp != NULL){
-        sdi_ptr -> sdi_size_of_stack = atoi(pTmp); 
+        sdi_ptr -> sdi_size_of_stack = strtol(pTmp,  NULL, 10); 
     }else{
         sdi_ptr -> sdi_size_of_stack = SDRAD_DEFAULT_STACK_SIZE;
     }
@@ -102,7 +102,7 @@ void sdrad_get_config(sdrad_d_info_t *sdi_ptr)
     pTmp = getenv( "SDRAD_HEAP_SIZE");
 
     if(pTmp != NULL){
-        sdi_ptr -> sdi_size_of_heap = atoi(pTmp); 
+        sdi_ptr -> sdi_size_of_heap = strtol(pTmp,  NULL, 10);
     }else{
         sdi_ptr -> sdi_size_of_heap = SDRAD_DEFAULT_HEAP_SIZE; 
     }
@@ -168,7 +168,7 @@ sdrad_domain_t sdrad_create_monitor_domain()
     smd_ptr = (sdrad_monitor_domain_t  *)&sgm_ptr -> sdrad_monitor_domain; 
     pTmp = getenv( "SDRAD_HEAP_SIZE");
     if(pTmp != NULL){
-        smd_ptr -> smd_size_of_data_domain = atoi(pTmp); 
+        smd_ptr -> smd_size_of_data_domain = strtol(pTmp,  NULL, 10);
     }else{
         smd_ptr -> smd_size_of_data_domain = 0x100000000;
     }
@@ -525,7 +525,7 @@ void sdrad_data_domain_init(sdrad_global_manager_t *sgm_ptr,
     if (sdi_ptr -> sdi_init_heap_flag == false) {
         pTmp = getenv( "SDRAD_DATA_DOMAIN_SIZE");
         if(pTmp != NULL){
-            sdi_ptr -> sdi_size_of_heap = atoi(pTmp); 
+            sdi_ptr -> sdi_size_of_heap =  strtol(pTmp,  NULL, 10); 
         }else{
             sdi_ptr -> sdi_size_of_heap = SDRAD_DEFAULT_DATA_DOMAIN_SIZE;
         }
