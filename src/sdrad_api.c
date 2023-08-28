@@ -259,7 +259,7 @@ int32_t __sdrad_init(void *base_address)
     }
     memcpy(sdi_ptr->sdi_buffer, ss_ptr -> buffer, sizeof(jmp_buf)); 
     sdi_ptr->sdi_return_address = ss_ptr -> return_address;
-
+    sdi_ptr -> sdi_saved_ex = true; 
     sdrad_store_pkru_config(stm_ptr-> pkru_config[active_domain]); 
     return SDRAD_SUCCESSFUL_RETURNED;
 }
