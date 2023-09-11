@@ -195,6 +195,7 @@ int32_t __sdrad_init(void *base_address)
         sdi_ptr -> sdi_return_address = ss_ptr -> return_address;
         sdi_ptr -> sdi_parent_domain = stm_ptr -> active_domain;
         sdi_ptr -> sdi_base_address = (sdrad_da_t)base_address;
+        sdi_ptr -> sdi_saved_ex = true;
         return SDRAD_SUCCESSFUL_RETURNED;
     }
 
