@@ -440,7 +440,7 @@ int32_t __sdrad_enter(udi_t udi, void *base_address)
     stm_ptr -> active_domain = sdi;
     /* parent domain stack pointer doesn't cover current return address */
     sdi_parent_ptr -> sdi_last_rsp = (sdrad_da_t)ss_ptr -> stack_info + 16;    
-    ss_ptr -> stack_info = (int64_t)(sdi_ptr -> sdi_address_stack + sdi_ptr -> sdi_size_of_stack); 
+    ss_ptr -> stack_info = (int64_t)(sdi_ptr -> sdi_address_stack + sdi_ptr -> sdi_size_of_stack - sdi_ptr -> sdi_address_offset_stack); 
     ss_ptr -> pkru_info = stm_ptr -> pkru_config[sdi];
     return sdi; 
 }
@@ -476,4 +476,68 @@ int32_t sdrad_call(udi_t udi,
 
     }
     return err;
+}
+
+long sdrad_get_stack_offset(uint64_t udi)
+{
+    sdrad_global_manager_t      *sgm_ptr;
+    int32_t                     sdi;
+    sdrad_d_info_t              *sdi_ptr; 
+    sdrad_thread_metadata_t     *stm_ptr; 
+    int32_t                      active_domain; 
+    int32_t                      sti;
+    int64_t                      rsp; 
+
+    sdrad_store_pkru_config(PKRU_ALL_UNSET);
+    sgm_ptr = (sdrad_global_manager_t *)&sdrad_global_manager;
+
+    sdi = sdrad_search_udi_control(udi, sgm_ptr -> udi_control_head);
+
+    if (sdi == SDRAD_ERROR_DOMAIN_NO_MAP)
+        return SDRAD_ERROR_NO_DOMAIN;
+
+    // Get STI from TDI 
+    sti = sdrad_get_sti(sgm_ptr); 
+    assert(sti != -1); 
+    stm_ptr = sgm_ptr -> stm_ptr[sti];
+
+    active_domain = stm_ptr -> active_domain; 
+
+    sdi_ptr = (sdrad_d_info_t *)&stm_ptr -> sdrad_d_info[sdi]; 
+    rsp = sdi_ptr -> sdi_address_stack + sdi_ptr -> sdi_size_of_stack; 
+    sdrad_store_pkru_config(stm_ptr-> pkru_config[active_domain]); 
+
+    return rsp; 
+}
+
+
+long sdrad_set_stack_offset(uint64_t udi, long offset)
+{
+    sdrad_global_manager_t      *sgm_ptr;
+    int32_t                     sdi;
+    sdrad_d_info_t              *sdi_ptr; 
+    sdrad_thread_metadata_t     *stm_ptr; 
+    int32_t                      sti;
+    int32_t                      active_domain; 
+
+    sdrad_store_pkru_config(PKRU_ALL_UNSET);
+    sgm_ptr = (sdrad_global_manager_t *)&sdrad_global_manager;
+
+    sdi = sdrad_search_udi_control(udi, sgm_ptr -> udi_control_head);
+
+    if (sdi == SDRAD_ERROR_DOMAIN_NO_MAP)
+        return SDRAD_ERROR_NO_DOMAIN;
+
+         // Get STI from TDI 
+    sti = sdrad_get_sti(sgm_ptr); 
+    assert(sti != -1); 
+    stm_ptr = sgm_ptr -> stm_ptr[sti];
+
+    active_domain = stm_ptr -> active_domain; 
+
+    sdi_ptr = (sdrad_d_info_t *)&stm_ptr -> sdrad_d_info[sdi]; 
+
+    sdi_ptr -> sdi_address_offset_stack = offset;  
+    sdrad_store_pkru_config(stm_ptr-> pkru_config[active_domain]); 
+    return SDRAD_SUCCESSFUL_RETURNED;
 }
