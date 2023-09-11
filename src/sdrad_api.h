@@ -179,3 +179,19 @@ int32_t sdrad_call(uint64_t udi, int32_t (*funcptr)(),  void *argument,
                size_t argument_size, int32_t *ret);
 
 
+/**
+ * @brief RUST sandbox! can get the stack-offset 
+ * 
+ * @param udi 
+ * @return stack address
+ */
+long sdrad_get_stack_offset(uint64_t udi); 
+
+/**
+ * @brief RUST sandbox! can set the stack-offset 
+ * 
+ * @param udi 
+ * @return stack address
+ */
+long sdrad_set_stack_offset(uint64_t udi, long rsp); 
+

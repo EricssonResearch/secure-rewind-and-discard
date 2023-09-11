@@ -496,10 +496,14 @@ void sdrad_execution_domain_init(sdrad_global_manager_t *sgm_ptr,
         sdi_ptr -> sdi_size_of_stack = scdi_ptr -> scdi_size_of_stack;
 
         if(scdi_ptr -> scdi_init_heap_domain_flag == true){
-            sdi_ptr -> sdi_address_of_heap = scdi_ptr -> scdi_address_heap; 
-            sdi_ptr -> sdi_size_of_heap = scdi_ptr -> scdi_size_of_heap;
-            sdi_ptr -> sdi_tlsf = tlsf_create_with_pool((void *)sdi_ptr -> sdi_address_of_heap,
-                                                    sdi_ptr -> sdi_size_of_heap);
+            sdi_ptr -> sdi_init_heap_flag = false;
+            /* It doesn't work for the heap memory, there are still 
+            remaining TLSF control structure
+            */
+            // sdi_ptr -> sdi_address_of_heap = scdi_ptr -> scdi_address_heap; 
+            // sdi_ptr -> sdi_size_of_heap = scdi_ptr -> scdi_size_of_heap;
+            // sdi_ptr -> sdi_tlsf = tlsf_create_with_pool((void *)sdi_ptr -> sdi_address_of_heap,
+            //                                         sdi_ptr -> sdi_size_of_heap);
         }else{
             sdi_ptr -> sdi_init_heap_flag = false;
         }
