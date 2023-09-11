@@ -131,6 +131,7 @@ typedef struct {
     sdrad_da_t          sdi_last_rsp; 
     sdrad_da_t          sdi_root_rsp;   
     sdrad_da_t          sdi_address_stack; 
+    sdrad_da_t          sdi_address_offset_stack;
     jmp_buf             sdi_buffer;
     int64_t             sdi_return_address;
     sdrad_da_t          sdi_base_address;
