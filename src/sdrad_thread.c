@@ -87,7 +87,7 @@ void *sdrad_pthread_construstor()
     int32_t                      status;
     int32_t                      active_domain;
     void                         *arg;
-    size_t                       stack_size, guard_size;
+    size_t                       guard_size;
     int64_t                      root_domain_pkru;
  
     sdrad_store_pkru_config(PKRU_ALL_UNSET); 
@@ -116,7 +116,7 @@ void *sdrad_pthread_construstor()
     pthread_getattr_np(pthread_self(), &attr);
     pthread_attr_getguardsize(&attr, &guard_size);
     pthread_attr_getstack(&attr, 
-                          &sdi_ptr -> sdi_address_stack, 
+                          (void *)&sdi_ptr -> sdi_address_stack, 
                           &sdi_ptr -> sdi_size_of_stack);
 
     SDRAD_DEBUG_PRINT("pthread stack: %p-%p (len = %zu = 0x%zx) \n", 
@@ -165,7 +165,12 @@ static int32_t (*real_pthread_create)(pthread_t *thread,
 void pthread_load_sym()
 {
     void *libc_handle, *sym;
-	libc_handle = dlopen("libpthread.so.0", RTLD_NOLOAD | RTLD_NOW);
+#if __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 35)
+    libc_handle = dlopen("libc.so.6", RTLD_NOLOAD | RTLD_NOW);
+#else
+    libc_handle = dlopen("libpthread.so.0", RTLD_NOLOAD | RTLD_NOW);
+#endif
+	
 
 	if (!libc_handle) {
 		fprintf(stderr, "can't open handle to libc.so.6: %s\n",
