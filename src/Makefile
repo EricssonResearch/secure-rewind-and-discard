@@ -1,3 +1,4 @@
+OUTPUT_PREFIX ?= .
 OUT_FILE_NAME = libsdrad.a libsdrad.so
 CC=gcc
 SDRAD_CONFIG+= -DPKEY_ENABLE  #-DSDRAD_MULTITHREAD  #-DZERO_DOMAIN
@@ -28,10 +29,12 @@ all: $(OBJECT_ROOT) $(OUT_FILE_NAME)
 
 
 libsdrad.so: $(OBJECT_ROOT) 
-	$(CC) -shared  -fPIC  $(CFLAGS) -o libsdrad.so  $(OBJECT_ROOT) 
+	mkdir -p $(OUTPUT_PREFIX)
+	$(CC) -shared  -fPIC  $(CFLAGS) -o $(OUTPUT_PREFIX)/libsdrad.so  $(OBJECT_ROOT) 
  
-libsdrad.a: $(OBJECT_ROOT) 
-	ar -rc libsdrad.a $(OBJECT_ROOT) 
+libsdrad.a: $(OBJECT_ROOT)
+	mkdir -p $(OUTPUT_PREFIX)
+	ar -rc $(OUTPUT_PREFIX)/libsdrad.a $(OBJECT_ROOT) 
 
 clean:
-	rm -f *.o  *.a *.so 
+	rm -f *.o  $(OUTPUT_PREFIX)/*.a $(OUTPUT_PREFIX)/*.so 
