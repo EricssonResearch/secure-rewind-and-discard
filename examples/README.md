@@ -68,6 +68,8 @@ Success: Domain Violation Detected
 ```
 
 * SDRaD protects the thread memory area from its own nested domain. 
+
+Note that requires multithreading support for sdrad library. To compile the sdrad library with multithreading support, use the following command: `SDRAD_CONFIG=-DSDRAD_MULTITHREAD make`
 ```
 ./pthread_example
 Success: Domain Violation Detected
