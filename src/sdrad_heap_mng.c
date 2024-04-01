@@ -40,8 +40,8 @@
 
 __thread tlsf_t tlsf_structure; 
 
-
-/* Wrapping glibc realloc with tlsf version */ 
+#ifdef SDRAD_HEAP
+// /* Wrapping glibc realloc with tlsf version */ 
 void *realloc(void *ptr, size_t size)
 {
     sdrad_thread_metadata_t  *stm_ptr; 
@@ -247,7 +247,7 @@ void *calloc (size_t nelem, size_t elsize)
     
     return ptr;
 } 
-
+#endif
 
 /* Memory management related API */ 
 

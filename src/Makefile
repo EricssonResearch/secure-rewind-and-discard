@@ -1,7 +1,7 @@
 OUTPUT_PREFIX ?= .
 OUT_FILE_NAME = libsdrad.a libsdrad.so
 CC=gcc
-SDRAD_CONFIG+= -DPKEY_ENABLE  #-DSDRAD_MULTITHREAD  #-DZERO_DOMAIN
+SDRAD_CONFIG+= -DPKEY_ENABLE  -DSDRAD_MULTITHREAD  #-DZERO_DOMAIN
 DEPS = sdrad.h sdrad_heap_mng.h sdrad_cache.h sdrad_error_handling.h\
 	   sdrad_pkey.h sdrad_signal.h sdrad_thread.h 
 

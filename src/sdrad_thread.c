@@ -196,7 +196,7 @@ void pthread_load_sym()
 
 
 
-
+#ifdef SDRAD_THREAD
 int32_t pthread_create(pthread_t *thread, 
                              const pthread_attr_t *attr,
                              void *(*start_routine) (void *), 
@@ -228,5 +228,5 @@ int32_t pthread_create(pthread_t *thread,
     SDRAD_MUTEX_UNLOCK();
     return ret;
 }
-
+#endif
 
