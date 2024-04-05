@@ -37,8 +37,11 @@
 #include "sdrad_heap_mng.h"
 #include "sdrad_api.h"
 
-
+#ifdef SDRAD_MULTITHREAD
 __thread tlsf_t tlsf_structure; 
+#else 
+tlsf_t tlsf_structure; 
+#endif
 
 
 /* Wrapping glibc realloc with tlsf version */ 

@@ -34,7 +34,13 @@ extern struct timespec start, stop;
 extern int8_t __data_start;
 extern int8_t __bss_start;
 extern int8_t __executable_start; 
+
+#ifdef SDRAD_MULTITHREAD
 extern __thread tlsf_t tlsf_structure; 
+#else
+extern tlsf_t tlsf_structure;
+#endif
+
 
 extern pthread_mutex_t  malloc_mutex;  
 extern int sdrad_constructor_flag;  
