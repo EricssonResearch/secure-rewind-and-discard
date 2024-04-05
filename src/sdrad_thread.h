@@ -73,7 +73,7 @@ static inline int32_t sdrad_get_sti(sdrad_global_manager_t *sgm_ptr)
     return -1;     
 }
 #else
-#define sdrad_get_sti(...)       1;    
+#define sdrad_get_sti(...)       ROOT_DOMAIN;    
 #endif
 
 // mutex related functions
