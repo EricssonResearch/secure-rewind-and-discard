@@ -118,7 +118,8 @@ enum
 //Usage status
 enum {
     DOMAIN_OCCUPIED = 55,
-    DOMAIN_NONOCCUPIED = 56 
+    DOMAIN_NONOCCUPIED = 56, 
+    THREAD_NONOCCUPIED = -1
 };
 
 
