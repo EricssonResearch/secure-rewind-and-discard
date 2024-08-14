@@ -72,6 +72,24 @@ static inline int32_t sdrad_get_sti(sdrad_global_manager_t *sgm_ptr)
     }
     return -1;     
 }
+
+__attribute__((always_inline))
+static inline int32_t sdrad_get_sti_from_tid(sdrad_global_manager_t *sgm_ptr,  sti_t tid)
+{
+    int32_t                      total_thread; 
+    int32_t                      k; 
+
+
+    total_thread = sgm_ptr -> sgm_total_thread;
+    
+    for(k = 0; k < total_thread+1; k++)
+    {
+        if(tid == sgm_ptr -> sgm_thread_id[k]){
+            return k;
+        }
+    }
+    return -1;     
+}
 #else
 #define sdrad_get_sti(...)       ROOT_DOMAIN;    
 #endif

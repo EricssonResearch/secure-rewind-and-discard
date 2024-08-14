@@ -93,17 +93,20 @@ void *sdrad_pthread_construstor()
     sdrad_store_pkru_config(PKRU_ALL_UNSET); 
     sgm_ptr = (sdrad_global_manager_t *)&sdrad_global_manager; 
     // Mapping TID to STI 
-    sgm_ptr -> sgm_thread_id[sgm_ptr -> sgm_total_thread] = pthread_self();
+
+    // find a free thread here: 
+    int32_t thread_id = sdrad_find_free_thread_id(sgm_ptr);
+    sgm_ptr -> sgm_thread_id[thread_id] = pthread_self();
     // Get memory area from Monitor Data Domain 
-    sgm_ptr -> stm_ptr[sgm_ptr -> sgm_total_thread] = sdrad_malloc_mdd(sizeof(sdrad_thread_metadata_t));
-    stm_ptr = sgm_ptr -> stm_ptr[sgm_ptr -> sgm_total_thread];
+    sgm_ptr -> stm_ptr[thread_id] = sdrad_malloc_mdd(sizeof(sdrad_thread_metadata_t));
+    stm_ptr = sgm_ptr -> stm_ptr[thread_id];
     sgm_ptr -> sgm_total_thread ++;  
 
     /* Assign a SDI domain */
     stm_ptr -> active_domain = sdrad_request_sdi();
 
     SDRAD_DEBUG_PRINT("SDRAD THREAD DOMAIN %d ", stm_ptr -> active_domain); 
-
+    
     active_domain = stm_ptr -> active_domain;
     sdi_ptr = (sdrad_d_info_t *)&stm_ptr->sdrad_d_info[active_domain];
     fun_ptr = sgm_ptr -> pthread_constructor_info.real_start_routine; 
@@ -115,6 +118,7 @@ void *sdrad_pthread_construstor()
     /* getting thread stack and size */
     pthread_getattr_np(pthread_self(), &attr);
     pthread_attr_getguardsize(&attr, &guard_size);
+    sdrad_store_pkru_config(PKRU_ALL_UNSET); 
     pthread_attr_getstack(&attr, 
                           (void *)&sdi_ptr -> sdi_address_stack, 
                           &sdi_ptr -> sdi_size_of_stack);
@@ -137,7 +141,7 @@ void *sdrad_pthread_construstor()
     pkey_mprotect((void *)sdi_ptr -> sdi_address_stack, 
                           PROT_READ | PROT_WRITE | PROT_GROWSUP, 
                           sdi_ptr -> sdi_size_of_stack, 
-                          sgm_ptr -> pdi[stm_ptr -> active_domain);
+                          sgm_ptr -> pdi[stm_ptr -> active_domain]);
 
     stm_ptr -> pkru_config[stm_ptr -> active_domain] = sdrad_pkru_default_config(sgm_ptr -> pdi[stm_ptr -> active_domain]);
 #else
@@ -162,9 +166,12 @@ static int32_t (*real_pthread_create)(pthread_t *thread,
                               void *(*start_routine) (void *), 
                               void *arg) = NULL;
 
+static int32_t (*real_pthread_join)(pthread_t *thread, 
+                              void **value_ptr) = NULL;                              
+
 void pthread_load_sym()
 {
-    void *libc_handle, *sym;
+    void *libc_handle, *pthread_create_sym, *pthread_join_sym;
 #if __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 35)
     libc_handle = dlopen("libc.so.6", RTLD_NOLOAD | RTLD_NOW);
 #else
@@ -173,19 +180,32 @@ void pthread_load_sym()
 	
 
 	if (!libc_handle) {
-		fprintf(stderr, "can't open handle to libc.so.6: %s\n",
+#if __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 35)
+	    fprintf(stderr, "can't open handle to libc.so.6: %s\n",
 			dlerror());
+#else
+		fprintf(stderr, "can't open handle to libpthread.so.6: %s\n",
+			dlerror());
+#endif
 		_exit(EXIT_FAILURE);
 	}
 	
-	sym = dlsym(libc_handle, "pthread_create");
-	if (!sym) {
-		fprintf(stderr, "can't find __libc_start_main():%s\n",
+	pthread_create_sym = dlsym(libc_handle, "pthread_create");
+	if (!pthread_create_sym) {
+		fprintf(stderr, "can't find pthread_create():%s\n",
 			dlerror());
 		_exit(EXIT_FAILURE);
 	}
 
-	real_pthread_create = sym;
+    pthread_join_sym = dlsym(libc_handle, "pthread_join");
+    if (!pthread_create_sym) {
+		fprintf(stderr, "can't find pthread_join():%s\n",
+			dlerror());
+		_exit(EXIT_FAILURE);
+	}
+
+	real_pthread_create = pthread_create_sym;
+    real_pthread_join = pthread_join_sym;
 	
 	if(dlclose(libc_handle)) {
 		fprintf(stderr, "can't close handle to libc.so.6: %s\n",
@@ -226,6 +246,28 @@ int32_t pthread_create(pthread_t *thread,
     assert(1 == sgm_ptr -> sdrad_pthread_constructor_done);
     sgm_ptr -> sdrad_pthread_constructor_done = 0;
     SDRAD_MUTEX_UNLOCK();
+    return ret;
+}
+
+
+int32_t pthread_join(pthread_t thread, void **value_ptr)
+{
+    sdrad_global_manager_t              *sgm_ptr;
+    sdrad_thread_metadata_t             *stm_ptr;
+    int32_t ret;
+
+    sdrad_store_pkru_config(PKRU_ALL_UNSET); 
+    if (real_pthread_join == NULL)
+        pthread_load_sym(); 
+
+    ret = real_pthread_join(thread, value_ptr);
+    sgm_ptr = (sdrad_global_manager_t *)&sdrad_global_manager; 
+
+    int32_t thread_index = sdrad_get_sti_from_tid(sgm_ptr, thread); 
+    stm_ptr = sgm_ptr -> stm_ptr[thread_index];
+    sgm_ptr -> status[stm_ptr->active_domain] = DOMAIN_NONOCCUPIED;  
+    // FREE THREAD ID 
+    sgm_ptr -> sgm_thread_id[thread_index] = THREAD_NONOCCUPIED;
     return ret;
 }
 

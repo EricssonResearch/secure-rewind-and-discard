@@ -72,6 +72,21 @@ int32_t sdrad_find_free_domain(sdrad_global_manager_t *sgm_ptr)
     return -1; 
 }
 
+/*I cannot put here SDRAD_MUTEX_LOCK and unlock..
+* It affects the wrap_pthread_create function
+* the thread cannot be initialized in that case */
+
+int32_t sdrad_find_free_thread_id(sdrad_global_manager_t *sgm_ptr)
+{
+    int32_t i; 
+    for (i = 0 ; i < NUM_OF_THREADS; i++ ){
+        if((sgm_ptr->sgm_thread_id[i]) == THREAD_NONOCCUPIED){
+            return i; 
+        }
+    }
+    return -1; 
+}
+
 
 sdrad_domain_size_t sdrad_get_default_stack_size()
 {
@@ -247,6 +262,11 @@ void sdrad_constructor()
     for (i = DOMAIN_2; i < TOTAL_DOMAIN ; i++ ){
         sgm_ptr -> status[i] = DOMAIN_NONOCCUPIED; 
     }
+    /* I need to skip monitor domain and root domain */
+    for (i = DOMAIN_2; i < NUM_OF_THREADS ; i++ ){
+        sgm_ptr -> sgm_thread_id[i] = THREAD_NONOCCUPIED; 
+    }
+
     /* Create  Monitor Data Domain */
     smd_ptr -> smd_monitor_sdi = sdrad_create_monitor_domain();
 	/* Mapping TID (Thread ID) to STI (SDRoB Thread Index). */
