@@ -10,6 +10,7 @@
  */
 
 .intel_syntax noprefix
+.section .note.GNU-stack,"",@progbits
 .extern  _setjmp@PLT
 #define __ASSEMBLY__
 

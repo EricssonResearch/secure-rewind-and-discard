@@ -11,6 +11,7 @@
 .intel_syntax noprefix
 #define __ASSEMBLY__
 
+.section .note.GNU-stack,"",@progbits
 .section .text
          .global  sdrad_enter
 .type    sdrad_enter, @function

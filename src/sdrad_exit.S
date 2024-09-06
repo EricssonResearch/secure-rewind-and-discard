@@ -12,6 +12,7 @@
 .extern __sdrad_exit@PLT
 #define __ASSEMBLY__
 
+.section .note.GNU-stack,"",@progbits
 .section .text
 .global  sdrad_exit
 .type    sdrad_exit, @function
