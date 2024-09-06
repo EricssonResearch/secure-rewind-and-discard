@@ -429,7 +429,7 @@ int32_t __sdrad_enter(udi_t udi, void *base_address)
     }
 
     // Check no execution context
-    if(stm_ptr -> sdrad_d_info[sdi].sdi_buffer == NULL){
+    if(stm_ptr -> sdrad_d_info[sdi].sdi_saved_ex == false){
         return SDRAD_ERROR_WRONG_CONFIG;
     }
 
