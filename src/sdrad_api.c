@@ -423,8 +423,8 @@ int32_t __sdrad_enter(udi_t udi, void *base_address)
     if (sdi == SDRAD_ERROR_DOMAIN_NO_MAP)
         return SDRAD_ERROR_NO_DOMAIN;
 
-    // Check the config
-    if(stm_ptr -> sdrad_d_info[sdi].sdi_options == SDRAD_DATA_DOMAIN){
+    // Check the config, we cannot enter the data domain
+    if(stm_ptr -> sdrad_d_info[sdi].sdi_options & SDRAD_DATA_DOMAIN){
         return SDRAD_ERROR_WRONG_CONFIG;
     }
 
