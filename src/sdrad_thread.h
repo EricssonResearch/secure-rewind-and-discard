@@ -26,9 +26,8 @@
 #include <stdbool.h>
 #include <string.h>
 #include <pthread.h>
-#include "/usr/include/event.h"
-#include <sys/resource.h> 
 #include <assert.h>
+#include <errno.h>
 
 
 #ifdef SDRAD_MULTITHREAD

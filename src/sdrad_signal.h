@@ -26,8 +26,6 @@
 #include <stdbool.h>
 #include <string.h>
 #include <pthread.h>
-#include "/usr/include/event.h"
-#include <sys/resource.h> 
 
 void sdrad_handler(int sig, siginfo_t *si, void *unused);
 

@@ -26,7 +26,6 @@
 #include <stdarg.h>
 #include <string.h>
 #include <pthread.h>
-#include <sys/resource.h> 
 
 
 extern void *sdrad_insert_cache_domain(sdrad_global_manager_t *sgm_ptr); 
