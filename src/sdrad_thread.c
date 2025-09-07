@@ -249,7 +249,7 @@ int32_t pthread_create(pthread_t *thread,
     return ret;
 }
 
-
+#ifdef SDRAD_MULTITHREAD
 int32_t pthread_join(pthread_t thread, void **value_ptr)
 {
     sdrad_global_manager_t              *sgm_ptr;
@@ -270,5 +270,6 @@ int32_t pthread_join(pthread_t thread, void **value_ptr)
     sgm_ptr -> sgm_thread_id[thread_index] = THREAD_NONOCCUPIED;
     return ret;
 }
+#endif
 
 

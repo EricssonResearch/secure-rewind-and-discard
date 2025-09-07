@@ -480,7 +480,7 @@ int32_t sdrad_call(udi_t udi,
     return err;
 }
 
-intptr_t sdrad_get_stack_offset(uint64_t udi)
+uintptr_t sdrad_get_stack_offset(uint64_t udi)
 {
     sdrad_global_manager_t      *sgm_ptr;
     int32_t                     sdi;
@@ -488,7 +488,7 @@ intptr_t sdrad_get_stack_offset(uint64_t udi)
     sdrad_thread_metadata_t     *stm_ptr; 
     int32_t                      active_domain; 
     int32_t                      sti;
-    intptr_t                    rsp; 
+    uintptr_t                    rsp; 
 
     sdrad_store_pkru_config(PKRU_ALL_UNSET);
     sgm_ptr = (sdrad_global_manager_t *)&sdrad_global_manager;
@@ -506,9 +506,7 @@ intptr_t sdrad_get_stack_offset(uint64_t udi)
     active_domain = stm_ptr -> active_domain; 
 
     sdi_ptr = (sdrad_d_info_t *)&stm_ptr -> sdrad_d_info[sdi]; 
-    rsp = sdi_ptr -> sdi_address_stack + 
-          sdi_ptr -> sdi_size_of_stack - 
-          sdi_ptr -> sdi_address_offset_stack; 
+    rsp = sdi_ptr -> sdi_address_stack + sdi_ptr -> sdi_size_of_stack;
     sdrad_store_pkru_config(stm_ptr-> pkru_config[active_domain]); 
 
     return rsp; 

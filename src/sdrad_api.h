@@ -185,7 +185,7 @@ int32_t sdrad_call(uint64_t udi, int32_t (*funcptr)(),  void *argument,
  * @param udi 
  * @return stack address
  */
-intptr_t sdrad_get_stack_offset(uint64_t udi); 
+uintptr_t sdrad_get_stack_offset(uint64_t udi); 
 
 /**
  * @brief RUST sandbox! can set the stack-offset 

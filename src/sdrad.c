@@ -303,10 +303,10 @@ void sdrad_constructor()
     bss_end_pa = do_page_aligned((int64_t)&end) +  4096 ;
 
     /*Data segment + BSS segment protection */ 
-    status = pkey_mprotect(&__data_start, 
+    /*status = pkey_mprotect(&__data_start, 
                             bss_end_pa - (int64_t)&__data_start, 
                             PROT_READ | PROT_WRITE, 
-                            sgm_ptr -> pdi[ROOT_DOMAIN]);  
+                            sgm_ptr -> pdi[ROOT_DOMAIN]);  */
     assert(status != -1); 
 
     /* Associate global monitor data with PKRU */
